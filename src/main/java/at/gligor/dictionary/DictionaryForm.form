@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="at.gligor.dictionary.DictionaryForm">
+  <grid id="27dc6" binding="rootPanel" layout-manager="FormLayout">
+    <rowspec value="center:10px:noGrow"/>
+    <rowspec value="fill:d:grow"/>
+    <rowspec value="center:5px:noGrow"/>
+    <colspec value="fill:10px:noGrow"/>
+    <colspec value="fill:d:grow"/>
+    <colspec value="fill:10px:noGrow"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="408"/>
+    </constraints>
+    <properties>
+      <minimumSize width="300" height="300"/>
+      <preferredSize width="350" height="450"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <tabbedpane id="1d1df" default-binding="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+          <forms/>
+        </constraints>
+        <properties>
+          <focusable value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="dcff6" layout-manager="FormLayout">
+            <rowspec value="fill:15px:noGrow"/>
+            <rowspec value="fill:d:noGrow"/>
+            <rowspec value="fill:5px:noGrow"/>
+            <rowspec value="fill:d:grow"/>
+            <rowspec value="fill:22px:noGrow"/>
+            <colspec value="fill:10px:noGrow"/>
+            <colspec value="fill:d:grow"/>
+            <colspec value="fill:d:noGrow"/>
+            <colspec value="fill:10px:noGrow"/>
+            <constraints>
+              <tabbedpane title="Danish-English"/>
+            </constraints>
+            <properties>
+              <opaque value="false"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="1ccc9" class="javax.swing.JButton" binding="danSearchButton">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <text value="Look Up"/>
+                </properties>
+              </component>
+              <component id="8fb0f" class="javax.swing.JTextField" binding="danSearchField">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                  <forms defaultalign-horz="false"/>
+                </constraints>
+                <properties/>
+              </component>
+              <scrollpane id="e57e6">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <forms top="0" left="3" bottom="0" right="6" defaultalign-horz="false" defaultalign-vert="false"/>
+                </constraints>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="14d79" class="javax.swing.JEditorPane" binding="danSearchResult">
+                    <constraints/>
+                    <properties>
+                      <contentType value="text/html"/>
+                      <editable value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+          <grid id="8f2b9" layout-manager="FormLayout">
+            <rowspec value="fill:15px:noGrow"/>
+            <rowspec value="fill:d:noGrow"/>
+            <rowspec value="fill:5px:noGrow"/>
+            <rowspec value="fill:d:grow"/>
+            <rowspec value="fill:22px:noGrow"/>
+            <colspec value="fill:10px:noGrow"/>
+            <colspec value="fill:d:grow"/>
+            <colspec value="fill:d:noGrow"/>
+            <colspec value="fill:10px:noGrow"/>
+            <constraints>
+              <tabbedpane title="English-Danish"/>
+            </constraints>
+            <properties>
+              <opaque value="false"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="e319" class="javax.swing.JButton" binding="engSearchButton">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms/>
+                </constraints>
+                <properties>
+                  <enabled value="false"/>
+                  <text value="Look Up"/>
+                </properties>
+              </component>
+              <component id="a82ce" class="javax.swing.JTextField" binding="engSearchField">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                  <forms defaultalign-horz="false"/>
+                </constraints>
+                <properties/>
+              </component>
+              <scrollpane id="59cdd">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <forms top="0" left="3" bottom="0" right="6" defaultalign-horz="false" defaultalign-vert="false"/>
+                </constraints>
+                <properties>
+                  <horizontalScrollBarPolicy value="31"/>
+                  <verticalScrollBarPolicy value="22"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="fbb1b" class="javax.swing.JEditorPane" binding="engSearchResult">
+                    <constraints/>
+                    <properties>
+                      <contentType value="text/html"/>
+                      <editable value="false"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+        </children>
+      </tabbedpane>
+    </children>
+  </grid>
+</form>
