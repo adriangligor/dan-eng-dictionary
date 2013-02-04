@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 
+import static at.gligor.dictionary.Util.join;
 import static java.lang.String.format;
 
 public class DataIndexer {
@@ -22,9 +23,6 @@ public class DataIndexer {
 
     public static final String IDX_TERM_SEPARATOR = ":";
     public static final String IDX_RESULT_SEPARATOR = ";";
-    public static final String IDX_FIELD_SEPARATOR = ",";
-    public static final String IDX_BOOLEAN_TRUE = "1";
-    public static final String IDX_BOOLEAN_FALSE = "0";
     public static final DateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss.SSSS");
 
     public static void main(String[] args) throws Exception {
@@ -40,7 +38,7 @@ public class DataIndexer {
         final Multimap<String, SearchResult> danIndex1 = dataIndexer.loadIndex(Lang.DAN);
         final Multimap<String, SearchResult> engIndex1 = dataIndexer.loadIndex(Lang.ENG);
 
-        final Collection<SearchResult> results = danIndex1.get("blæk");
+        final Collection<SearchResult> results = danIndex1.get("mørk");
         for (SearchResult result : results) {
             final InputStream in = DataIndexer.class.getResourceAsStream(Lang.DAN.getDictResourcePath());
             in.skip(result.getOffset());
@@ -89,22 +87,19 @@ public class DataIndexer {
         final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"));
 
         for (final String term : index.keySet()) {
-            writer.append(term)
-                    .append(IDX_TERM_SEPARATOR);
+            final Collection<SearchResult> results = index.get(term);
+            final LinkedList<String> serializedResults = new LinkedList<String>();
 
-            final Collection<SearchResult> searchResults = index.get(term);
-            boolean first = true;
-            for (final SearchResult searchResult : searchResults) {
-                writer.append(!first ? IDX_RESULT_SEPARATOR : "")
-                        .append(searchResult.isSubterm() ? IDX_BOOLEAN_TRUE : IDX_BOOLEAN_FALSE)
-                        .append(IDX_FIELD_SEPARATOR)
-                        .append(Integer.toString(searchResult.getStartPos()))
-                        .append(IDX_FIELD_SEPARATOR)
-                        .append(Integer.toString(searchResult.getOffset()));
-                first = false;
+            for (final SearchResult result : results) {
+                if (result.getResultRelation() == ResultRelation.FULL) {
+                    serializedResults.add(Integer.toString(result.getOffset()));
+                }
             }
 
-            writer.newLine();
+            if (!serializedResults.isEmpty()) {
+                writer.append(term).append(IDX_TERM_SEPARATOR).append(join(serializedResults, IDX_RESULT_SEPARATOR));
+                writer.newLine();
+            }
         }
 
         writer.close();
@@ -121,16 +116,17 @@ public class DataIndexer {
             final int termSeparatorIdx = line.indexOf(IDX_TERM_SEPARATOR);
 
             final String term = line.substring(0, termSeparatorIdx);
+            final LinkedList<String> terms = new LinkedList<String>();
+            terms.add(term);
 
             final String[] results = line.substring(termSeparatorIdx + 1).split(IDX_RESULT_SEPARATOR);
             for (final String result : results) {
-                final String[] resultFields = result.split(IDX_FIELD_SEPARATOR);
-                final boolean subterm = resultFields[0].equals("1");
-                final Integer startPos = Integer.valueOf(resultFields[1]);
-                final Integer offset = Integer.valueOf(resultFields[2]);
+                final Integer offset = Integer.valueOf(result);
 
-                final SearchResult searchResult = new SearchResult(subterm, startPos, offset);
-                index.put(term, searchResult);
+                final LinkedList<SearchTerm> searchableTerms = generateSubterms(terms, offset);
+                for (final SearchTerm searchableTerm : searchableTerms) {
+                    index.put(searchableTerm.getTerm(), searchableTerm.getSearchResult());
+                }
             }
         }
 
@@ -187,7 +183,7 @@ public class DataIndexer {
         return rawText;
     }
 
-    private static LinkedList<String> splitIntoTerms(String text, int linenr) {
+    private static LinkedList<String> splitIntoTerms(String text, @SuppressWarnings("unused") int linenr) {
         final LinkedList<String> rawTerms = new LinkedList<String>();
 
         final String[] strings = text.split("[ ,-/'`&]");
@@ -200,7 +196,7 @@ public class DataIndexer {
         return rawTerms;
     }
 
-    private static LinkedList<String> removeSpecialCharacters(LinkedList<String> rawTerms, int linenr) {
+    private static LinkedList<String> removeSpecialCharacters(LinkedList<String> rawTerms, @SuppressWarnings("unused") int linenr) {
         final LinkedList<String> terms = new LinkedList<String>();
 
         for (final String rawTerm : rawTerms) {
@@ -243,25 +239,14 @@ public class DataIndexer {
         for (String term : terms) {
             for (int len = MIN_SUBTERM_LENGTH; len < Math.min(MAX_SUBTERM_LENGTH, term.length()); len++) {
                 for (int pos = 0; pos < term.length() - len + 1; pos++) {
-                    subterms.add(new SearchTerm(term.substring(pos, pos + len), true, pos, offset));
+                    final ResultRelation relation = ResultRelation.calculate(term, pos, len);
+                    subterms.add(new SearchTerm(term.substring(pos, pos + len), relation, offset));
                 }
             }
-            subterms.add(new SearchTerm(term, false, 0, offset));
+            subterms.add(new SearchTerm(term, ResultRelation.FULL, offset));
         }
 
         return subterms;
-    }
-
-    private static String join(LinkedList<?> values, String separator) {
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < values.size(); i++) {
-            final String value = values.get(i).toString();
-            sb.append(value);
-            if (i != values.size() - 1) {
-                sb.append(separator);
-            }
-        }
-        return sb.toString();
     }
 
     private static String prettyprint(String message, String text, int linenr) {

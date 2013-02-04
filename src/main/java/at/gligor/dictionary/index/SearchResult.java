@@ -2,22 +2,16 @@ package at.gligor.dictionary.index;
 
 public class SearchResult {
 
-    private final boolean subterm;
-    private final int startPos;
+    private final ResultRelation resultRelation;
     private final int offset;
 
-    SearchResult(boolean subterm, int startPos, int offset) {
-        this.subterm = subterm;
-        this.startPos = startPos;
+    SearchResult(ResultRelation resultRelation, int offset) {
+        this.resultRelation = resultRelation;
         this.offset = offset;
     }
 
-    public boolean isSubterm() {
-        return subterm;
-    }
-
-    public int getStartPos() {
-        return startPos;
+    public ResultRelation getResultRelation() {
+        return resultRelation;
     }
 
     public int getOffset() {

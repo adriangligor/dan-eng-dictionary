@@ -5,9 +5,9 @@ public class SearchTerm {
     private final String term;
     private final SearchResult searchResult;
 
-    SearchTerm(String term, boolean subterm, int startPos, int offset) {
+    SearchTerm(String term, ResultRelation resultRelation, int offset) {
         this.term = term;
-        this.searchResult = new SearchResult(subterm, startPos, offset);
+        this.searchResult = new SearchResult(resultRelation, offset);
     }
 
     public String getTerm() {

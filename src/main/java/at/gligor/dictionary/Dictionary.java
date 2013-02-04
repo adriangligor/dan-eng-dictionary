@@ -1,5 +1,6 @@
 package at.gligor.dictionary;
 
+import at.gligor.dictionary.index.ResultRelation;
 import at.gligor.dictionary.index.SearchResult;
 import at.gligor.dictionary.index.TextStreamReader;
 import com.google.common.collect.Multimap;
@@ -11,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static at.gligor.dictionary.Util.join;
+
 public class Dictionary {
-    //"<b>zut alors</b><br/>bla bla bla bla bla<br/><a href=\"http://www.google.com/?q=" + lookup + "\">look it up in google!</a>"
+
     public static final String GOOGLE_TRANSLATE_HTML_FORMAT = "<a href=\"http://translate.google.com/#%s%%7C%s%%7C%s\">try Google Translate</a>";
     public static final String ERROR_HTML_FORMAT = "An error occurred: %s";
     public static final String RESULT_OPEN_HTML = "<div style=\"margin: 5px;\">";
@@ -32,20 +35,21 @@ public class Dictionary {
     public String translate(String lookup, Lang toLang) {
         try {
             final List<String> perfectMatches = new ArrayList<String>();
-            final List<String> prefixMatches = new ArrayList<String>();
+            final List<String> wordMatches = new ArrayList<String>();
             final List<String> matches = new ArrayList<String>();
 
             final Collection<SearchResult> results = index.get(lookup);
             for (SearchResult result : results) {
                 final InputStream in = getClass().getResourceAsStream(lang.getDictResourcePath());
+                @SuppressWarnings("unused")
                 final long skipped = in.skip(result.getOffset());
                 final TextStreamReader reader = new TextStreamReader(in, "ISO-8859-15");
                 reader.nextLine();
 
-                if (!result.isSubterm()) {
+                if (result.getResultRelation() == ResultRelation.FULL) {
                     perfectMatches.add(reader.getLine());
-                } else if (result.getStartPos() == 0) {
-                    prefixMatches.add(reader.getLine()); // todo also support postfix results
+                } else if (result.getResultRelation() == ResultRelation.PREFIX || result.getResultRelation() == ResultRelation.POSTFIX) {
+                    wordMatches.add(reader.getLine());
                 } else {
                     matches.add(reader.getLine());
                 }
@@ -59,7 +63,7 @@ public class Dictionary {
                     URLEncoder.encode(lookup, "UTF-8"));
 
             final StringBuilder result = new StringBuilder(RESULT_OPEN_HTML);
-            mergeMatches(result, perfectMatches, prefixMatches, matches);
+            mergeMatches(result, perfectMatches, wordMatches, matches);
 
             result.append(BLOCK_SEPARATOR_HTML);
             if (result.length() == 0) {
@@ -103,18 +107,4 @@ public class Dictionary {
         return result;
     }
 
-    private String join(List<String> strings, String separator) {
-        if (strings.size() == 0) {
-            return "";
-        } else if (strings.size() == 1) {
-            return strings.get(0);
-        } else {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(strings.get(0));
-            for (int i = 1; i < strings.size(); i++) {
-                builder.append(separator).append(strings.get(i));
-            }
-            return builder.toString();
-        }
-    }
 }

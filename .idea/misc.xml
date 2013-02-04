@@ -18,21 +18,5 @@
   </component>
   <component name="RegexUtilComponent" text="\u1234" flags="0" regex=".*(&amp;[^;]+;)|(\\u\d{4}).*" mode="1" />
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
-  <component name="masterDetails">
-    <states>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>Android 3.2 Platform</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
-  </component>
 </project>
 
