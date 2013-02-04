@@ -1,3 +1,2 @@
-- postfix search
 - in-result search
 - multi-term search
