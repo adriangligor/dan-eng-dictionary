@@ -12,7 +12,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1.1</version> <!-- this used to be 13.0.1, the new version has not been tested -->
+            <version>31.0.1-jre</version> <!-- this used to be 13.0.1, the new version has not been tested -->
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
